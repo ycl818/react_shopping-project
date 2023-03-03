@@ -1,7 +1,40 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Login() {
+  const [data, setData] = useState({
+    username: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData({...data, [name]: value});
+  }
+
+  const submit = async (e) => {
+    const res = await axios.post('/v2/admin/signin', data);
+    const { token, expired } = res.data;
+    console.log(res)
+    document.cookie = `hexToken=${token}; expires=${new Date(expired)}; `;
+  }
+
+  useEffect(()=> {
+
+    // get cookie
+    const token = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("hexToken="))
+    ?.split("=")[1];
+    console.log(token)
+
+    axios.defaults.headers.common['Authorization'] = token;
+    (async() => {
+      const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products/all`);
+      console.log(productRes);
+    })()
+  }, [])
+
 
   return (<div className="container py-5">
     <div className="row justify-content-center">
@@ -23,7 +56,7 @@ function Login() {
             <input type="password" className="form-control"  name="password" id="password" placeholder="name@example.com" onChange={handleChange} />
           </label>
         </div>
-        <button type="button" className="btn btn-primary" >登入</button>
+        <button type="button" className="btn btn-primary" onClick={submit}>登入</button>
       </div>
     </div>
   </div>)

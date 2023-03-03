@@ -1,21 +1,14 @@
-
-import { useEffect } from 'react';
-import axios from 'axios'
+import { Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
 
 function App() {
 
-  useEffect(()=> {
-     console.log(process.env.REACT_APP_API_URL, process.env.REACT_APP_API_PATH );
-     (async () => {
-       const res = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/products/all`)
-       console.log(res)
-     })()
-    
-  },[])
 
   return (
     <div className="App">
-      hello
+      <Routes>
+        <Route path="/login" element={ <Login /> }></Route>
+      </Routes>
     </div>
   );
 }
