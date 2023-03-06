@@ -3,6 +3,7 @@ import axios from 'axios';
 import ProductModal from '../../components/ProductModal';
 import DeleteModal from '../../components/DeleteModal';
 import { Modal } from 'bootstrap';
+import Pagination from '../../components/Pagination';
 
 const AdminProducts = () => {
 
@@ -28,8 +29,8 @@ const AdminProducts = () => {
     getProducts()
   }, [])
 
-  const getProducts = async() => {
-    const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products`);
+  const getProducts = async(page = 1) => {
+    const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products?page=${page}`);
     console.log(productRes);
     setProducts(productRes.data.products);
     setPagination(productRes.data.pagination);
@@ -131,28 +132,7 @@ const AdminProducts = () => {
         </tbody>
       </table>
 
-      <nav aria-label='Page navigation example'>
-        <ul className='pagination'>
-          <li className='page-item'>
-            <a className='page-link disabled' href='/' aria-label='Previous'>
-              <span aria-hidden='true'>&laquo;</span>
-            </a>
-          </li>
-          {[...new Array(5)].map((_, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li className='page-item' key={`${i}_page`}>
-              <a className={`page-link ${i + 1 === 1 && 'active'}`} href='/'>
-                {i + 1}
-              </a>
-            </li>
-          ))}
-          <li className='page-item'>
-            <a className='page-link' href='/' aria-label='Next'>
-              <span aria-hidden='true'>&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <Pagination  pagination={pagination} changePage={getProducts}/>
     </div>
   )
 }
