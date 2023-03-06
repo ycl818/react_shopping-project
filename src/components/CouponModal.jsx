@@ -1,29 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
+const CouponModal = ({closeModal, getCoupons, tempCoupon, type}) => {
 
 
   const [tempData, setTempData] = useState({
-        title: "超級特惠價格",
+        title: "",
         is_enabled: 1,
         percent: 80,
         due_date: 1555459200,
         code: "testCode"
   })
 
+  const [date, setDate] = useState(new Date());
+ 
+
   useEffect(()=> {
     console.log(type, tempCoupon)
     if (type === 'create') {
       setTempData({
-        title: "超級特惠價格",
+        title: "",
         is_enabled: 1,
         percent: 80,
         due_date: 1555459200,
         code: "testCode"
       })
+      setDate(new Date())
     } else if (type === 'edit') {
       setTempData(tempCoupon)
+      setDate(new Date(tempCoupon.due_date))
     }
   }, [type, tempCoupon])
 
@@ -62,7 +67,10 @@ const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
 
       const res = await axios[method](
        api, {
-          data: tempData
+          data: {
+            ...tempData,
+            due_date: date.getTime() // 轉換成 unix timestamp
+          }
         }
       )
       console.log(res)
@@ -77,7 +85,7 @@ const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
     <div
       className='modal fade'
       tabIndex='-1'
-      id='productModal'
+      id='couponModal'
       aria-labelledby='exampleModalLabel'
       aria-hidden='true'
     >
@@ -133,6 +141,17 @@ const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
                     name='due_date'
                     placeholder='請輸入到期日'
                     className='form-control mt-1'
+                    value={`${date.getFullYear().toString()}-${(
+                      date.getMonth() + 1
+                    )
+                      .toString()
+                      .padStart(2, 0)}-${date
+                      .getDate()
+                      .toString()
+                      .padStart(2, 0)}`}
+                    onChange={(e) => {
+                      setDate(new Date(e.target.value));
+                    }}
                   />
                 </label>
               </div>
@@ -157,7 +176,7 @@ const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
                 type='checkbox'
                 id='is_enabled'
                 name='is_enabled'
-                value={tempData.is_enabled}
+                checked={!!tempData.is_enabled}
                 onChange={handleChange}
               />
               是否啟用
@@ -183,4 +202,4 @@ const ProductModal = ({closeModal, getCoupons, tempCoupon, type}) => {
   )
 }
 
-export default ProductModal
+export default CouponModal
