@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Outlet, useNavigate , Link} from 'react-router-dom'
 import axios from 'axios'
+import Message from '../../components/Message'
 
 const Dashboard = () => {
 
@@ -38,6 +39,7 @@ const Dashboard = () => {
 
   return (
     <>
+      <Message/>
       <nav className='navbar navbar-expand-lg bg-dark'>
         <div className='container-fluid'>
           <p className='text-white mb-0'>HEX EATS 後台管理系統</p>
