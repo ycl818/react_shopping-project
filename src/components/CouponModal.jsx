@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react';
+import {
+  MessageContext,
+  handleSuccessMessage,
+  handleErrorMessage,
+} from '../store/messageStore';
 import axios from 'axios'
 
 const CouponModal = ({closeModal, getCoupons, tempCoupon, type}) => {
@@ -13,6 +18,7 @@ const CouponModal = ({closeModal, getCoupons, tempCoupon, type}) => {
   })
 
   const [date, setDate] = useState(new Date());
+  const [, dispatch] = useContext(MessageContext)
  
 
   useEffect(()=> {
@@ -74,10 +80,12 @@ const CouponModal = ({closeModal, getCoupons, tempCoupon, type}) => {
         }
       )
       console.log(res)
+      handleSuccessMessage(dispatch, res)
       closeModal()
       getCoupons()
     } catch (error) {
       console.log(error)
+      handleErrorMessage(dispatch, error)
     }
   }
 

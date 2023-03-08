@@ -1,9 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import axios from 'axios';
 import CouponModal from '../../components/CouponModal';
 import DeleteModal from '../../components/DeleteModal';
 import { Modal } from 'bootstrap';
 import Pagination from '../../components/Pagination';
+import {
+  MessageContext,
+  handleSuccessMessage,
+  handleErrorMessage,
+} from '../../store/messageStore';
+
+
+
 
 const AdminCoupons = () => {
 
@@ -12,6 +20,8 @@ const AdminCoupons = () => {
   // type : 決定modal展開的用途
   const [type, setType] = useState('create')
   const [tempCoupon, setTempCoupon] = useState({})
+
+  const [, dispatch] = useContext(MessageContext);
 
   const couponModal = useRef(null)
   const deleteModal = useRef(null)
@@ -61,9 +71,12 @@ const AdminCoupons = () => {
       console.log(res)
       if (res.data.success) {
         getCoupons();
+        handleSuccessMessage(dispatch, res)
         deleteModal.current.hide();
+
       }
     } catch (error) {
+      handleErrorMessage(dispatch, error)
       console.log(error);
     }
   }
